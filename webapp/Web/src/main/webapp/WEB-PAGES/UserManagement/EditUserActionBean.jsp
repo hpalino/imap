@@ -72,6 +72,16 @@
                                 </div>
                             </div>
                             <div class="row">
+                                <label class="col-sm-2 control-label">Status:</label>
+                                <div class="col-sm-2">
+                                    <s:select name="status" id="status" class="form-control m-b-sm" value="${actionBean.user.status}" style="width: 316px">
+                                        <c:forEach var="object" items="${actionBean.statuses}">
+                                            <s:option value="${object.id}">${object.status}</s:option>
+                                        </c:forEach>
+                                    </s:select>
+                                </div>
+                            </div>
+                            <div class="row">
                                 <label class="col-sm-2 control-label">Role:</label>
                                 <div class="col-sm-4">
                                     <s:select name="role" id="role" class="form-control m-b-sm" value="${actionBean.user.role.id}" style="width: 316px">
@@ -111,6 +121,7 @@
             $(document).ready(function(){
                 $('#role').val(${actionBean.user.role.id});
                 $('#kppId').val(${actionBean.user.kpp.id});
+                $('#status').val(${actionBean.user.status});
             });
         </script>
 </s:layout-component>

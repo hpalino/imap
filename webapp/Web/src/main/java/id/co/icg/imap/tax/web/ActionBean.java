@@ -8,12 +8,10 @@ package id.co.icg.imap.tax.web;
 import id.co.icg.imap.tax.dao.model.Menu;
 import id.co.icg.imap.tax.dao.model.User;
 import id.co.icg.imap.tax.function.ConstantaUtil;
-import id.co.icg.imap.tax.manager.RoleManager;
 import java.io.IOException;
 import java.util.List;
 import net.sourceforge.stripes.action.ActionBeanContext;
 import net.sourceforge.stripes.controller.StripesFilter;
-import net.sourceforge.stripes.integration.spring.SpringBean;
 import org.codehaus.jackson.map.ObjectMapper;
 
 /**

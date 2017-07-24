@@ -12,7 +12,10 @@ import id.co.icg.imap.tax.manager.AreaManager;
 import id.co.icg.imap.tax.manager.UserManager;
 import id.co.icg.imap.tax.manager.RoleManager;
 import id.co.icg.imap.tax.web.ActionBean;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import net.sourceforge.stripes.action.Before;
 import net.sourceforge.stripes.action.DefaultHandler;
 import net.sourceforge.stripes.action.DontValidate;
@@ -38,6 +41,7 @@ public class EditUserActionBean extends ActionBean {
     private Long kppId;
     private String position;
     private String phone;
+    private Integer status;
     private String email;
     private Integer role;
 
@@ -79,6 +83,19 @@ public class EditUserActionBean extends ActionBean {
         return areaManager.getKpps();
     }
     
+    public List<Map<String, Object>> getStatuses() {
+        List list = new ArrayList();
+        Map<String, Object> map = new HashMap();
+        map.put("id", 1);
+        map.put("status", "Active");
+        list.add(map);
+        map = new HashMap();
+        map.put("id", 0);
+        map.put("status", "Inactive");
+        list.add(map);
+        return list;
+    }
+    
     public Resolution save() {
         User u = userManager.getUser(getUsername());
         u.setFullName(fullName);
@@ -86,10 +103,11 @@ public class EditUserActionBean extends ActionBean {
         u.setPosition(position);
         u.setPhone(phone);
         u.setEmail(email);
+        u.setStatus(status);
         u.setRole(roleManager.getRole(getRole()));
-        boolean status = userManager.updateUser(u);
+        boolean resp = userManager.updateUser(u);
         
-        if(status) setResponse("Update profile success.");
+        if(resp) setResponse("Update profile success.");
         else setResponse("Update profile failed.");
         return view();
     }
@@ -176,6 +194,14 @@ public class EditUserActionBean extends ActionBean {
 
     public void setRole(Integer role) {
         this.role = role;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
 }

@@ -14,7 +14,6 @@ import static id.co.icg.imap.tax.function.FunctionUtil.dateTimeFormat;
 import id.co.icg.imap.tax.manager.AreaManager;
 import id.co.icg.imap.tax.manager.RoleManager;
 import id.co.icg.imap.tax.manager.UserManager;
-import id.co.icg.imap.tax.web.BaseActionBeanContext;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
@@ -32,11 +31,6 @@ import org.springframework.stereotype.Service;
 public class UserManagerImpl implements UserManager {
 
     private final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(this.getClass());
-
-    private BaseActionBeanContext ctx;
-    public BaseActionBeanContext getContext() {
-        return this.ctx;
-    }
 
     @Resource(name = "jdbcTemplate")
     private JdbcTemplate jdbcTemplate;
@@ -213,13 +207,9 @@ public class UserManagerImpl implements UserManager {
     @Override
     public int saveUser(User user) {
         String query;
-        User userSession = (User) getContext().getSession("SESSION_USER");
         if(getUser(user.getUsername())==null){
             if(user.getFullName()!=null
                 &&user.getPassword()!=null
-                &&user.getEmail()!=null
-                &&user.getPosition()!=null
-                &&user.getPhone()!=null
                 &&user.getStatus()!=null
                 &&user.getRole().getId()!=null){
                     query = " INSERT INTO app_user("
@@ -234,7 +224,7 @@ public class UserManagerImpl implements UserManager {
                         jdbcTemplate.update(query, new Object[]{
                             user.getUsername(), user.getPassword(), user.getFullName(), user.getKpp().getId(), 
                             user.getPosition(), user.getEmail(), user.getPhone(), user.getRole().getId(), 
-                            user.getStatus(), userSession.getUsername(), dateTimeFormat(new Date(), "yyyy-MM-dd HH:mm:ss")}, arg);
+                            user.getStatus(), user.getRegisterBy(), dateTimeFormat(new Date(), "yyyy-MM-dd HH:mm:ss")}, arg);
                         return 0;
                     } catch (DataAccessException e){
                         logger.error(e.toString());
@@ -249,22 +239,37 @@ public class UserManagerImpl implements UserManager {
         String query;
         if(getUser(user.getUsername())!=null){
             if(user.getFullName()!=null
-                &&user.getEmail()!=null
-                &&user.getPosition()!=null
-                &&user.getPhone()!=null
                 &&user.getStatus()!=null
                 &&user.getRole()!=null){
 
-                query = "UPDATE app_user SET full_name=?, kpp_id=?, position=?, email=?, phone=?, kpp=?, role_id=?, status=? WHERE username=?";
-                int[] arg = {Types.VARCHAR, Types.BIGINT, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.INTEGER, Types.INTEGER, Types.VARCHAR};
+                query = "UPDATE app_user SET full_name=?, kpp_id=?, position=?, email=?, phone=?, role_id=?, status=? WHERE username=?";
+                int[] arg = {Types.VARCHAR, Types.BIGINT, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.INTEGER, Types.INTEGER, Types.VARCHAR};
                 try {
-                    jdbcTemplate.update(query, new Object[]{user.getFullName(), user.getKpp().getId(), user.getPosition(), user.getEmail(), user.getPhone(), user.getKpp(), user.getRole().getId(), user.getStatus(), user.getUsername()}, arg);
+                    jdbcTemplate.update(query, new Object[]{user.getFullName(), user.getKpp().getId(), user.getPosition(), user.getEmail(), user.getPhone(), user.getRole().getId(), user.getStatus(), user.getUsername()}, arg);
                     return true;
                 } catch (DataAccessException e) {
                     logger.error(e.toString());
                     return false;
                 }
             } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean updateLastLogin(User user) {
+        String query;
+        if(getUser(user.getUsername())!=null){
+            query = "UPDATE app_user SET last_login=? WHERE username=?";
+            int[] arg = {Types.VARCHAR, Types.VARCHAR};
+            try {
+                jdbcTemplate.update(query, new Object[]{dateTimeFormat(new Date(), "yyyy-MM-dd HH:mm:ss"), user.getUsername()}, arg);
+                return true;
+            } catch (DataAccessException e) {
+                logger.error(e.toString());
                 return false;
             }
         } else {

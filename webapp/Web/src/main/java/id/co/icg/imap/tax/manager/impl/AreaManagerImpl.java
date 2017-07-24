@@ -16,6 +16,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
 import id.co.icg.imap.tax.manager.AreaManager;
 import id.co.icg.imap.tax.web.BaseActionBeanContext;
+import java.sql.Types;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.dao.DataAccessException;
@@ -148,6 +149,58 @@ public class AreaManagerImpl implements AreaManager {
         } catch (DataAccessException e) {
             logger.error(e.toString());
             return null;
+        }
+    }
+
+    @Override
+    public int removeKpp(Long kppId) {
+        String query;
+        Kpp kpp = getKpp(kppId);
+        if(kpp!=null){
+            query = "DELETE FROM master_kpp WHERE id=?";
+            int[] arg = {Types.BIGINT};
+            try {
+                jdbcTemplate.update(query, new Object[]{kpp.getId()}, arg);
+                return 0;
+            } catch (DataAccessException e){
+                logger.error(e.toString());
+                return 4;
+            }
+        } else return 1;
+    }
+
+    @Override
+    public int saveKpp(Kpp kpp) {
+        String query;
+        if(kpp.getKpp()!=null){
+            query = " INSERT INTO master_kpp(kpp) "
+                    + " VALUES(?)";
+            int[] arg = {Types.VARCHAR};
+            try {
+                jdbcTemplate.update(query, new Object[]{kpp.getKpp()}, arg);
+                return 0;
+            } catch (DataAccessException e){
+                logger.error(e.toString());
+                return 2;
+            }
+        } else return 1;
+    }
+
+    @Override
+    public boolean updateKpp(Kpp kpp) {
+        String query;
+        if(getKpp(kpp.getId())!=null){
+            query = "UPDATE master_kpp SET kpp=? WHERE id=?";
+            int[] arg = {Types.VARCHAR, Types.BIGINT};
+            try {
+                jdbcTemplate.update(query, new Object[]{kpp.getKpp(), kpp.getId()}, arg);
+                return true;
+            } catch (DataAccessException e) {
+                logger.error(e.toString());
+                return false;
+            }
+        } else {
+            return false;
         }
     }
 

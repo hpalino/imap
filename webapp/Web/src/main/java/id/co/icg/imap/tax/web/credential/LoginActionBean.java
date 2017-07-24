@@ -73,13 +73,13 @@ public class LoginActionBean extends ActionBean {
                 user.setPassword(user.getUsername()); //amankan password
                 setUserSession(user);
                 setNotifSoundSession(true);
-
+                userManager.updateLastLogin(user);
                 List<Menu> menus = roleManager.getMenus(user.getRole().getId());
                 setMenuSession(menus);
 
                 return new RedirectResolution(WelcomeActionBean.class);
             } else {
-                setResponse("Your account has been disabled.");
+                setResponse("Your account has been disabled. Please contact your upline or administrator.");
                 return view();
             }
         } else {

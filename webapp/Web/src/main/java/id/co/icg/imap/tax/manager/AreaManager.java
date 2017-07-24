@@ -20,4 +20,7 @@ public interface AreaManager {
     List<Map<String, String>>  getListSubDistricts(String provinceCode, String cityCode, String districtCode);
     Kpp  getKpp(Long kppId);
     List<Kpp>  getKpps();
+    int removeKpp(Long kppId);
+    int saveKpp(Kpp kpp);
+    boolean updateKpp(Kpp kpp);
 }

@@ -26,37 +26,21 @@
 
                     <div class="ibox">
                         <div class="ibox-title">
-                            <h5>User Management</h5>
+                            <h5>List of KPP</h5>
                             <div class="ibox-tools">
                             </div>
                         </div>
                         <div class="ibox-content" style="padding: 15px">
-                            <div class="m-b-lg">
-                                <s:form class="m-t" beanclass="id.co.icg.imap.tax.web.user.ListUserActionBean">
-                                <div class="input-group">
-                                    <input type="text" name="searchKey" placeholder="Find user ..." class=" form-control">
-                                    <span class="input-group-btn">
-                                        <s:submit class="btn btn-info" name="search">Search</s:submit>
-                                        <s:submit class="btn btn-primary" name="add">New User</s:submit>
-                                    </span>
-                                </div>
-                                </s:form>
-                            </div>
                             <div class="table-responsive">
                                 <table class="table table-hover issue-tracker no-margins">
                                     <thead>
                                         <tr>
                                             <th width="5%"></th>
-                                            <th width="13%">
-                                                Full Name
+                                            <th width="50%">
+                                                KPP
                                             </th>
-                                            <th width="8%">Phone</th>
-                                            <th width="18%">KPP</th>
-                                            <th width="9%">Role</th>
-                                            <th width="10%">Registered By</th>
-                                            <th width="13%">Registered Date</th>
-                                            <th width="13%">Last Login</th>
-                                            <th width="11%">
+                                            <th width="11%" align="right">
+                                                Action
                                             </th>
                                         </tr>
                                     </thead>
@@ -84,33 +68,25 @@
         <!-- Page-Level Scripts -->
         <script>
             $(document).ready(function(){
-                var data=${actionBean.listUsers};
+                var data=${actionBean.listKpps};
                 r='';
                 $.each(data, function(index, item){
                     r +='<tr>' +
                         '    <td>' +
-                        '        <img alt="image" class="img-sm" src="${pageContext.request.contextPath}/img/alpha_' + item.fullName.toString().charAt(0).toLowerCase() + '.png">' +
+                        '        <img alt="image" class="img-sm" src="${pageContext.request.contextPath}/img/alpha_' + item.kpp.toString().replace("KPP Pratama ","").charAt(0).toLowerCase() + '.png">' +
                         '    </td>' +
-                        '    <td class="text-left" style="width:13%">' + item.fullName +
-                        '        <small style="display: block">' + item.position + '</small>' +
+                        '    <td class="text-left" style="width:13%">' + item.kpp +
                         '    </td>' +
-                        '    <td>' + item.phone + '</td>' +
-                        '    <td class="text-left">' + item.kpp.kpp + '</td>' +
-                        '    <td class="text-left">' + item.role.name + '</td>' +
-                        '    <td>' + item.registerBy + '</td>' +
-                        '    <td>' + dateFormat(item.registerDate, "yyyy-mm-dd HH:MM:ss") + '</td>' +
-                        '    <td>' + dateFormat(item.lastLogin, "yyyy-mm-dd HH:MM:ss") + '</td>' +
                         '    <td class="text-right">' +
                         '        <form action="' + window.location.origin + window.location.pathname + '">' +
-                        '            <input type="hidden" name="username" value="' + item.username + '">' +
-                        '            <button name="edit" class="btn btn-primary btn-sm"> Edit</button>' +
-                        '            <button name="remove" class="btn btn-danger btn-sm" onclick="return confirm(\'Do you really want to remove this user?\');"> Remove</button>' +
+                        '            <input type="hidden" name="kppId" value="' + item.id + '">' +
+                        '            <button name="remove" class="btn btn-danger btn-sm" onclick="return confirm(\'Do you really want to remove this KPP?\');"> Remove</button>' +
                         '        </form>' +
                         '    </td>' +
                         '</tr>';
 
                 });
-                $('.table-content').html(r===''?'<tr><td colspan="7">(There is no user under your role)</td></tr>':r);
+                $('.table-content').html(r===''?'<tr><td colspan="7">(There is no KPP under your role)</td></tr>':r);
             });
         </script>
 

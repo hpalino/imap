@@ -8,7 +8,6 @@ package id.co.icg.imap.tax.manager;
 //import id.co.icg.ireload.messenger.dao.model.User;
 import id.co.icg.imap.tax.dao.model.User;
 import java.util.List;
-import java.util.Map;
 
 /**
  *
@@ -26,5 +25,6 @@ public interface UserManager {
     int removeUser(String username);
     int saveUser(User user);
     boolean updateUser(User user);
+    boolean updateLastLogin(User user);
     
 }

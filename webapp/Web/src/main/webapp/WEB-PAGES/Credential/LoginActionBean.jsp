@@ -24,13 +24,13 @@
 
     <body class="gray-bg">
         <div class="modal-dialog">
-            <div class="modal-content modal-sm middle-box text-center loginscreen animated fadeInDown" style="margin-top: 50px; padding-top: 10px; width:320px">
+            <div class="modal-content modal-sm middle-box text-center loginscreen animated fadeInDown" style="margin-top: 50px; padding-top: 10px; width:360px">
                 <div class="modal-header" style="padding: 10px 20px">
                     <div>
                         <span><img class="" src="${pageContext.request.contextPath}/img/pajak.png" style="width: 70%"></img></span>
                     </div>
                     <br/>
-                    <h3>Welcome to iMap - Apps Zona Nilai Tanah</h3>
+                    <h3 style="margin-left:-5px; margin-right: -5px">Welcome to iMap - Apps Zona Nilai Tanah</h3>
                     </small>
                 </div>
                 <div class="modal-body" style="padding: 15px 20px 10px 20px">

@@ -133,6 +133,7 @@
         <script>
             $(document).ready(function(){
                 $('#role').val(${actionBean.user.role.id});
+                $('#kpp').val(${actionBean.user.kpp.kpp});
             });
         </script>
 </s:layout-component>
