@@ -25,12 +25,12 @@ $(document).ready(function () {
     $("body").toggleClass("mini-navbar");
     $('.navbar-minimalize').on('click', function () {
         window.setTimeout(function () {
-            $("#map").width($(".ibox").width() * 0.97);
+            $("#map").width($(".ibox").width() * 0.99);
         }, 500);
     });
     SmoothlyMenu();
     window.setTimeout(function () {
-        $("#map").width($(".ibox").width() * 0.97);
+        $("#map").width($(".ibox").width() * 0.99);
     }, 1000);
 
     hWrapper=$("body").height() - $(".navbar-static-top").height() - $(".footer").height() - 100;

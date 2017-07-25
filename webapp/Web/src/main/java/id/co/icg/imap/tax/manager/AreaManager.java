@@ -6,6 +6,7 @@
 package id.co.icg.imap.tax.manager;
 
 import id.co.icg.imap.tax.dao.model.Kpp;
+import id.co.icg.imap.tax.dao.model.MasterArea;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +15,9 @@ import java.util.Map;
  * @author Fauzi Marjalih
  */
 public interface AreaManager {
+    List<MasterArea>  getListMasterAreas(String provinceCode, String cityCode, String districtCode);
+    MasterArea  getMasterArea(String areaCode);
+
     List<Map<String, String>>  getListProvinces();
     List<Map<String, String>>  getListCities(String provinceCode);
     List<Map<String, String>>  getListDistricts(String provinceCode, String cityCode);

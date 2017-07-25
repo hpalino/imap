@@ -7,6 +7,7 @@ package id.co.icg.imap.tax.manager.impl;
 
 
 import id.co.icg.imap.tax.dao.model.Kpp;
+import id.co.icg.imap.tax.dao.model.MasterArea;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -45,6 +46,70 @@ public class AreaManagerImpl implements AreaManager {
 
     public void setJdbcTemplateProd(JdbcTemplate jdbcTemplateProd) {
         this.jdbcTemplateProd = jdbcTemplateProd;
+    }
+
+    @Override
+    public List<MasterArea> getListMasterAreas(String provinceCode, String cityCode, String districtCode) {
+        String query, filter="";
+        if(provinceCode!=null){
+            filter += " AND province_code='" + provinceCode + "' ";
+        }
+        if(cityCode!=null){
+            filter += " AND city_code='" + cityCode + "' ";
+        }
+        if(districtCode!=null){
+            filter += " AND district_code='" + districtCode + "' ";
+        }
+        if(filter!=""){
+            query  = 
+                " SELECT DISTINCT * " +
+                " FROM master_area " +
+                " WHERE 1 " + filter;
+            return jdbcTemplateProd.query(query, new Object[]{}, new RowMapper() {
+                @Override
+                    public MasterArea mapRow(ResultSet rs, int i) throws SQLException {
+                        MasterArea masterArea = new MasterArea();
+                        masterArea.setAreaCode(rs.getString("area_code"));
+                        masterArea.setSubDistrictCode(rs.getString("sub_district_code"));
+                        masterArea.setSubDistrict(rs.getString("sub_district"));
+                        masterArea.setDistrictCode(rs.getString("district_code"));
+                        masterArea.setDistrict(rs.getString("district"));
+                        masterArea.setCityCode(rs.getString("city_code"));
+                        masterArea.setCity(rs.getString("city"));
+                        masterArea.setProvinceCode(rs.getString("province_code"));
+                        masterArea.setProvince(rs.getString("province"));
+                        return masterArea;
+                    }
+            });
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public MasterArea getMasterArea(String areaCode) {
+        String query = "select * from master_area where area_code=?";
+        try {
+            return jdbcTemplate.queryForObject(query, new Object[]{areaCode}, new RowMapper<MasterArea>() {
+                @Override
+                public MasterArea mapRow(ResultSet rs, int i) throws SQLException {
+                    MasterArea masterArea = new MasterArea();
+                    masterArea.setAreaCode(rs.getString("area_code"));
+                    masterArea.setSubDistrictCode(rs.getString("sub_district_code"));
+                    masterArea.setSubDistrict(rs.getString("sub_district"));
+                    masterArea.setDistrictCode(rs.getString("district_code"));
+                    masterArea.setDistrict(rs.getString("district"));
+                    masterArea.setCityCode(rs.getString("city_code"));
+                    masterArea.setCity(rs.getString("city"));
+                    masterArea.setProvinceCode(rs.getString("province_code"));
+                    masterArea.setProvince(rs.getString("province"));
+                    return masterArea;
+                }
+            });
+        } catch (DataAccessException e) {
+            logger.info("area_not_found:" + areaCode);
+            return null;
+        }
     }
 
     public List<Map<String, String>> getListProvinces() {

@@ -27,6 +27,7 @@ public class Attribute{
     private String attribute3;
     private String userInput;
     private Date dateInput;
+    private MasterArea masterArea;
     private List<Attachment> attachments;
     private List<Value> values;
 
@@ -215,6 +216,14 @@ public class Attribute{
 
     public void setValues(List<Value> values) {
         this.values = values;
+    }
+
+    public MasterArea getMasterArea() {
+        return masterArea;
+    }
+
+    public void setMasterArea(MasterArea masterArea) {
+        this.masterArea = masterArea;
     }
 
 }

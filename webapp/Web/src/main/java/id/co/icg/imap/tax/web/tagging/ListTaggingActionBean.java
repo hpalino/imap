@@ -8,7 +8,6 @@ package id.co.icg.imap.tax.web.tagging;
 import id.co.icg.imap.tax.dao.model.TaxPerson;
 import id.co.icg.imap.tax.dao.model.Attribute;
 import id.co.icg.imap.tax.dao.model.User;
-import id.co.icg.imap.tax.dao.model.Attachment;
 import id.co.icg.imap.tax.manager.AreaManager;
 import id.co.icg.imap.tax.web.ActionBean;
 import net.sourceforge.stripes.action.Before;
@@ -30,18 +29,10 @@ import java.util.Map;
  *
  * @author Fauzi Marjalih
  */
-@UrlBinding("/MapTagging.html")
-public class MapTaggingActionBean extends ActionBean {
+@UrlBinding("/ListTagging.html")
+public class ListTaggingActionBean extends ActionBean {
 
-    public Long getTaxId() {
-        return taxId;
-    }
-
-    public void setTaxId(Long taxId) {
-        this.taxId = taxId;
-    }
-
-    private String searchKey;
+    private String keySearch;
 
     private String provinceCode;
     private String cityCode;
@@ -56,17 +47,9 @@ public class MapTaggingActionBean extends ActionBean {
     private Double ppm;
     private String nop;
     
-    private Long taxId;
     private String name;
     private String npwp;
 
-    private String dateInput;
-    private String filename;
-    private String description;
-    private String latLng;
-    private Double latitude;
-    private Double longitude;
-    
     
     @ValidateNestedProperties({
         @Validate(field = "productId"  , required = true, minlength = 4),
@@ -93,13 +76,8 @@ public class MapTaggingActionBean extends ActionBean {
     @DontValidate
     public Resolution getListNpwp() {
         List<TaxPerson> taxPersons = taxManager.getListTaxPersons(npwp, name);
-            return new StreamingResolution("text", jSon(taxPersons!=null?taxPersons:""));
-    }
-
-    @DontValidate
-    public Resolution getListNop() {
-        List<Attribute> attributes = taxManager.getListAttributes(getTaxId(), nop, null);
-        return new StreamingResolution("text", jSon(attributes!=null?attributes:""));
+        System.out.println("get:" + jSon(taxPersons!=null?taxPersons:""));
+        return new StreamingResolution("text", jSon(taxPersons!=null?taxPersons:""));
     }
 
     private List<FileBean> attachments;
@@ -136,13 +114,13 @@ public class MapTaggingActionBean extends ActionBean {
         TaxPerson tagger;
         String addResponse = "";
         setResponse("Success, data was saved." + addResponse);
-        return new ForwardResolution("WEB-PAGES/Tagging/MapTagging.jsp");
+        return new ForwardResolution("WEB-PAGES/Tagging/ListTagging.jsp");
     }
     
     @DefaultHandler
     @DontValidate
     public Resolution view() {
-        return new ForwardResolution("WEB-PAGES/Tagging/MapTagging.jsp");
+        return new ForwardResolution("WEB-PAGES/Tagging/ListTagging.jsp");
     }
 
     @Before
@@ -164,59 +142,6 @@ public class MapTaggingActionBean extends ActionBean {
 
     public void setNpwp(String npwp) {
         this.npwp = npwp;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getDateInput() {
-        return dateInput;
-    }
-
-    public void setDateInput(String dateInput) {
-        this.dateInput = dateInput;
-    }
-
-    public Double getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(Double latitude) {
-        this.latitude = latitude;
-    }
-
-    public Double getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(Double longitude) {
-        this.longitude = longitude;
-    }
-
-    public String getLatLng() {
-        return latLng;
-    }
-
-    public void setLatLng(String latLng) {
-        if(latLng.contains(",")){
-            String[] parse = latLng.split(",");
-            this.latitude = Double.valueOf(parse[0]);
-            this.longitude = Double.valueOf(parse[1]);
-        }
-        this.latLng = latLng;
-    }
-
-    public String getFilename() {
-        return filename;
-    }
-
-    public void setFilename(String filename) {
-        this.filename = filename;
     }
 
     public String getProvinceCode() {
@@ -251,12 +176,12 @@ public class MapTaggingActionBean extends ActionBean {
         this.subDistrict = subDistrict;
     }
 
-    public String getSearchKey() {
-        return searchKey;
+    public String getKeySearch() {
+        return keySearch;
     }
 
-    public void setSearchKey(String searchKey) {
-        this.searchKey = searchKey;
+    public void setKeySearch(String keySearch) {
+        this.keySearch = keySearch;
     }
 
     public String getRw() {

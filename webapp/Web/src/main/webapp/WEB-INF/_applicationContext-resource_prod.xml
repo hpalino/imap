@@ -15,13 +15,13 @@
 
 
 
-    <context:property-placeholder location="classpath:jdbc_local.properties" />
+    <context:property-placeholder location="classpath:jdbc_prod.properties" />
 
     <task:annotation-driven/>
     
     <bean id="dataSourceProd" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
-        <property name="driverClass" value="org.mariadb.jdbc.Driver" />
-        <!--<property name="driverClass" value="com.mysql.jdbc.Driver" />-->
+        <!--<property name="driverClass" value="org.mariadb.jdbc.Driver" />-->
+        <property name="driverClass" value="com.mysql.jdbc.Driver" />
         <property name="jdbcUrl" value="${jdbc.url.prod}" />
         <property name="user" value="${jdbc.username.prod}" />
         <property name="password" value="${jdbc.password.prod}" />
@@ -32,8 +32,8 @@
     </bean>
     
     <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
-        <property name="driverClass" value="org.mariadb.jdbc.Driver" />
-        <!--<property name="driverClass" value="com.mysql.jdbc.Driver" />-->
+        <!--property name="driverClass" value="org.mariadb.jdbc.Driver" /-->
+        <property name="driverClass" value="com.mysql.jdbc.Driver" />
         <property name="jdbcUrl" value="${jdbc.url}" />
         <property name="user" value="${jdbc.username}" />
         <property name="password" value="${jdbc.password}" />

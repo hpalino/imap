@@ -9,8 +9,10 @@ package id.co.icg.imap.tax.manager.impl;
 import id.co.icg.imap.tax.dao.model.Attachment;
 import id.co.icg.imap.tax.dao.model.Value;
 import id.co.icg.imap.tax.dao.model.Attribute;
+import id.co.icg.imap.tax.dao.model.MasterArea;
 import id.co.icg.imap.tax.dao.model.TaxPerson;
 import id.co.icg.imap.tax.dao.model.User;
+import id.co.icg.imap.tax.manager.AreaManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -54,34 +56,51 @@ public class TaxManagerImpl implements TaxManager {
         this.jdbcTemplateProd = jdbcTemplateProd;
     }
 
-    public List<TaxPerson> getListTaxPersons(String npwp) {
-        String query;
-        query  = 
-            " SELECT * " +
-            " FROM tax_person " +
-            " WHERE npwp LIKE ?";
-        return jdbcTemplateProd.query(query, new Object[]{"%" + npwp + "%"}, new RowMapper() {
-            @Override
-            public TaxPerson mapRow(ResultSet rs, int i) throws SQLException {
-                    TaxPerson a = new TaxPerson();
-                    a.setId(rs.getLong("id"));
-                    a.setName(rs.getString("name"));
-                    a.setNpwp(rs.getString("npwp"));
-                    a.setDescription(rs.getString("description"));
-                    a.setUserInput(rs.getString("user_input"));
-                    a.setDateInput(new java.util.Date(rs.getTimestamp("date_input").getTime()));
-                return a;
-            }
-        });
+    @Resource(name = "areaManager")
+    private AreaManager     areaManager;
+
+    public void setAreaManager(AreaManager areaManager) {
+        this.areaManager = areaManager;
     }
 
-    public List<Attribute> getListAttributes(Long taxId, String nop, String name, String areaCode) {
+    public List<TaxPerson> getListTaxPersons(String npwp, String name) {
+        String query, filter="";
+        if(npwp!=null){
+            filter += " npwp LIKE '%" + npwp + "%' ";
+        }
+        if(name!=null){
+            filter += (filter!=""?"OR":"") + " name LIKE '%" + name + "%' ";
+        }
+        if(filter!=""){
+            query  = 
+                " SELECT * " +
+                " FROM tax_person " +
+                " WHERE " + filter;
+            return jdbcTemplateProd.query(query, new Object[]{}, new RowMapper() {
+                @Override
+                public TaxPerson mapRow(ResultSet rs, int i) throws SQLException {
+                        TaxPerson a = new TaxPerson();
+                        a.setId(rs.getLong("id"));
+                        a.setName(rs.getString("name"));
+                        a.setNpwp(rs.getString("npwp"));
+                        a.setDescription(rs.getString("description"));
+                        a.setUserInput(rs.getString("user_input"));
+                        a.setDateInput(new java.util.Date(rs.getTimestamp("date_input").getTime()));
+                    return a;
+                }
+            });
+        } else {
+            return null;
+        }
+    }
+
+    public List<Attribute> getListAttributes(Long taxId, String nop, String areaCode) {
         String query;
         query  = 
             " SELECT * " +
             " FROM attribute " +
-            " WHERE tax_id=? OR nop LIKE ? OR name LIKE ? OR area_code LIKE ?";
-        return jdbcTemplateProd.query(query, new Object[]{taxId, "%" + nop + "%", "%" + name + "%", "%" + areaCode + "%"}, new RowMapper() {
+            " WHERE tax_id=? OR nop LIKE ? OR area_code LIKE ?";
+        return jdbcTemplateProd.query(query, new Object[]{taxId, "%" + nop + "%", "%" + areaCode + "%"}, new RowMapper() {
             @Override
             public Attribute mapRow(ResultSet rs, int i) throws SQLException {
                 Attribute a = new Attribute();
@@ -95,10 +114,7 @@ public class TaxManagerImpl implements TaxManager {
                 a.setStreetClass(rs.getString("street_class"));
                 a.setZone(rs.getString("zone"));
                 a.setSector(rs.getString("sector"));
-                a.setSubDistrict(rs.getString("sub_district"));
-                a.setDistrict(rs.getString("district"));
-                a.setCity(rs.getString("city"));
-                a.setProvince(rs.getString("province"));
+                a.setMasterArea(areaManager.getMasterArea(rs.getString("area_code")));
                 a.setRt(rs.getString("rt"));
                 a.setRw(rs.getString("rw"));
                 a.setAttribute1(rs.getString("attribute1"));
@@ -170,7 +186,7 @@ public class TaxManagerImpl implements TaxManager {
                     a.setDescription(rs.getString("description"));
                     a.setUserInput(rs.getString("user_input"));
                     a.setDateInput(new java.util.Date(rs.getTimestamp("date_input").getTime()));
-                    List<Attribute> attributes = getListAttributes(rs.getLong("id"), null, null, null);
+                    List<Attribute> attributes = getListAttributes(rs.getLong("id"), null, null);
                     if(attributes==null) attributes = new ArrayList<Attribute>();
                     a.setAttributes(attributes);
                     return a;
@@ -250,10 +266,7 @@ public class TaxManagerImpl implements TaxManager {
                     a.setStreetClass(rs.getString("street_class"));
                     a.setZone(rs.getString("zone"));
                     a.setSector(rs.getString("sector"));
-                    a.setSubDistrict(rs.getString("sub_district"));
-                    a.setDistrict(rs.getString("district"));
-                    a.setCity(rs.getString("city"));
-                    a.setProvince(rs.getString("province"));
+                    a.setMasterArea(areaManager.getMasterArea(rs.getString("area_code")));
                     a.setRt(rs.getString("rt"));
                     a.setRw(rs.getString("rw"));
                     a.setAttribute1(rs.getString("attribute1"));

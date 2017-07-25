@@ -1,9 +1,3 @@
-<%-- 
-    Document   : MemberRegistrationActionBean
-    Created on : Sep 19, 2016, 10:02:03 AM
-    Author     : Fauzi Marjalih
---%>
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <%@ include file="/WEB-PAGES/taglibs.jsp" %>
 <s:layout-render name="/WEB-PAGES/index.jsp" title="">
@@ -44,87 +38,19 @@
             .form-group {margin-bottom: 3px}
             .fileinput {margin-bottom: 0px}
             .form-control {font-size: 13px; height: 31px; padding: 4px 8px}
+            .list-group {margin-bottom: 5px}
+            .list-group-item {padding: 4px 8px;height: 31px; background-color: #ffffff}
             .col-xs-3.control-label {padding-right: 0px; text-align: left}
         </style>
-        <div class="row">
-            <div class="col-lg-12" style="padding-left:5px; padding-right: 5px; padding-bottom: 15px">
-                <div class="ibox float-e-margins" style="margin-bottom: 5px">
-                    <div class="ibox-title">
-                        <h5>Filter by:<small></small></h5>
-                        <div class="ibox-tools">
-                            <a class="collapse-link">
-                                <i class="fa fa-chevron-up"></i>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="ibox-content" style="padding: 15px">
-                        <div class="row" style="padding-bottom: 10px">
-                            <div class="col-lg-5">
-                                <div class="form-group">
-                                    <label class="col-xs-3 control-label">Province:</label>
-                                    <div class="col-xs-9">
-                                        <select name="province" id="filter-province" class="form-control" style="width: 95%">
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row" style="padding-bottom: 10px">
-                            <div class="col-lg-5">
-                                <div class="form-group">
-                                    <label class="col-xs-3 control-label">City:</label>
-                                    <div class="col-xs-9">
-                                        <select name="city" id="filter-city" class="form-control" style="width: 95%">
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row" style="padding-bottom: 10px">
-                            <div class="col-lg-5">
-                                <div class="form-group">
-                                    <label class="col-xs-3 control-label">District:</label>
-                                    <div class="col-xs-9">
-                                        <select name="district" id="filter-district" class="form-control" style="width: 95%">
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row" style="padding-bottom: 10px">
-                            <div class="col-lg-5">
-                                <div class="form-group">
-                                    <label class="col-xs-3 control-label">Sub District:</label>
-                                    <div class="col-xs-9">
-                                        <select name="subdistrict" id="filter-subdistrict" class="form-control" style="width: 95%">
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row" style="padding-bottom: 10px">
-                            <div class="col-lg-5">
-                                <div class="form-group">
-                                    <label class="col-xs-3 control-label"></label>
-                                    <div class="col-xs-9">
-                                        <button type="submit" class="btn btn-white">Submit</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
         <div class="row">
             <div class="col-lg-12" style="padding-left:5px; padding-right: 5px">
                 <div class="ibox float-e-margins" style="margin-bottom: 5px">
                     <div class="ibox-title">
                         <h5>Google Map Picker<small></small></h5>
                     </div>
-                    <div class="ibox-content" style="padding: 15px">
+                    <div class="ibox-content" style="padding: 7px">
                         <div id="map-container">
-                            <div id="map" style="width: 1065px; height: 550px"></div>
+                            <div id="map"></div>
                         </div>
                     </div>
                 </div>
@@ -162,7 +88,7 @@
         </div>
         
         <div>
-            <div class="modal inmodal" id="modRecord" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal inmodal" id="modRecord" role="dialog" aria-hidden="true">
                 <div class="modal-dialog modal-sm" style="width: 750px">
                     <s:form beanclass="id.co.icg.imap.tax.web.tagging.MapTaggingActionBean">
                     <div class="modal-content animated fadeIn">
@@ -177,21 +103,38 @@
                                     <div class="row" style="margin-left:15px">
                                         <div class="form-horizontal form-reseller">
                                             <div class="form-group">
+                                                <label class="col-xs-3 control-label">Search Key:</label>
+                                                <div class="col-xs-9">
+                                                    <s:select name="searchKey" style="border-radius: 4px; width: 84%" id="modal-searchKey" >
+                                                    </s:select>
+                                                    <button type="submit" name="addNpwp" class="btn btn-white" style="padding: 8px 6px 4px 6px"><i class="fa fa-plus"></i></button>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
                                                 <label class="col-xs-3 control-label">Name:</label>
                                                 <div class="col-xs-9">
-                                                    <input name="name" class="form-control" style="border-radius: 4px; width: 95%" id="modal-name" value=""/>
+                                                    <input name="name" class="form-control" style="border-radius: 4px; width: 95%" id="modal-name" disabled/>
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label class="col-xs-3 control-label">NPWP:</label>
                                                 <div class="col-xs-7">
-                                                    <input name="npwp" class="form-control" style="border-radius: 4px; width: 95%" id="modal-npwp" value=""/>
+                                                    <input name="npwp" class="form-control" style="border-radius: 4px; width: 95%" id="modal-npwp" disabled/>
+                                                    <input name="taxId" class="hidden" id="modal-taxId" value=""/>
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label class="col-xs-3 control-label">Description:</label>
                                                 <div class="col-xs-9">
-                                                    <input name="description" class="form-control" style="border-radius: 4px; width: 95%" id="modal-description"/>
+                                                    <input name="description" class="form-control" style="border-radius: 4px; width: 95%" id="modal-description" disabled/>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-xs-3 control-label">List NOP:</label>
+                                                <div class="col-lg-9">
+                                                    <div class="list-group hidden" style="width:95%" id="list-nop">
+                                                    </div>
+                                                    <button type="button" onclick="clearModalAttribute()" class="btn btn-white hidden" id="btn-addNop"><i class="fa fa-plus">&nbsp;</i>Add New NOP</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -203,75 +146,79 @@
                                             <div class="form-group">
                                                 <label class="col-xs-3 control-label">NOP:</label>
                                                 <div class="col-xs-7">
-                                                    <input name="nop" class="form-control" style="border-radius: 4px; width: 95%" id="modal-npwp" value=""/>
+                                                    <input name="nop" class="form-control" style="border-radius: 4px; width: 95%" id="modal-nop" value=""/>
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label class="col-xs-3 control-label">Price Per M<sup>2</sup>:</label>
                                                 <div class="col-xs-5">
-                                                    <input name="ppm" class="form-control" style="border-radius: 4px; width: 95%" id="modal-npwp" value=""/>
+                                                    <input name="ppm" class="form-control" style="border-radius: 4px; width: 95%" id="modal-ppm" value=""/>
+                                                </div>
+                                                <label class="col-xs-1 control-label"style="padding-left:0px">Year:</label>
+                                                <div class="col-xs-3" style="margin-left: -10px;margin-right: 10px;">
+                                                    <input name="year" class="form-control" style="border-radius: 4px; width: 95%" id="modal-ppm" value=""/>
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label class="col-xs-3 control-label">Province:</label>
                                                 <div class="col-xs-9">
-                                                    <select name="province" id="modal-province" class="form-control" style="width: 95%">
+                                                    <select name="province" id="modal-province" class="form-control" id="modal-province" style="width: 95%">
                                                     </select>
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label class="col-xs-3 control-label">City:</label>
                                                 <div class="col-xs-9">
-                                                    <select name="city" id="modal-city" class="form-control" style="width: 95%">
+                                                    <select name="city" id="modal-city" class="form-control" id="modal-city" style="width: 95%">
                                                     </select>
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label class="col-xs-3 control-label">District:</label>
                                                 <div class="col-xs-9">
-                                                    <select name="district" id="modal-district" class="form-control" style="width: 95%">
+                                                    <select name="district" id="modal-district" class="form-control" id="modal-district" style="width: 95%">
                                                     </select>
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label class="col-xs-3 control-label">Subdistrict:</label>
                                                 <div class="col-xs-9">
-                                                    <select name="subDistrict" id="modal-subDistrict" class="form-control" style="width: 95%">
+                                                    <select name="subDistrict" id="modal-subDistrict" class="form-control" id="modal-subDistrict" style="width: 95%">
                                                     </select>
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label class="col-xs-3 control-label">RT:</label>
                                                 <div class="col-xs-3">
-                                                    <input name="rt" class="form-control" style="border-radius: 4px; width: 95%" id="modal-npwp" value=""/>
+                                                    <input name="rt" class="form-control" style="border-radius: 4px; width: 95%" id="modal-rt" value=""/>
                                                 </div>
                                                 <label class="col-xs-1 control-label">RW:</label>
                                                 <div class="col-xs-3">
-                                                    <input name="rw" class="form-control" style="border-radius: 4px; width: 95%" id="modal-npwp" value=""/>
+                                                    <input name="rw" class="form-control" style="border-radius: 4px; width: 95%" id="modal-rw" value=""/>
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label class="col-xs-3 control-label">Street:</label>
                                                 <div class="col-xs-9">
-                                                    <input name="street" class="form-control" style="border-radius: 4px; width: 95%" id="modal-npwp" value=""/>
+                                                    <input name="street" class="form-control" style="border-radius: 4px; width: 95%" id="modal-street" value=""/>
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label class="col-xs-3 control-label">Street Class:</label>
                                                 <div class="col-xs-9">
-                                                    <input name="streetClass" class="form-control" style="border-radius: 4px; width: 95%" id="modal-npwp" value=""/>
+                                                    <input name="streetClass" class="form-control" style="border-radius: 4px; width: 95%" id="modal-streetClass" value=""/>
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label class="col-xs-3 control-label">Sector:</label>
                                                 <div class="col-xs-9">
-                                                    <input name="sector" class="form-control" style="border-radius: 4px; width: 95%" id="modal-npwp" value=""/>
+                                                    <input name="sector" class="form-control" style="border-radius: 4px; width: 95%" id="modal-sector" value=""/>
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label class="col-xs-3 control-label">Zone:</label>
                                                 <div class="col-xs-9">
-                                                    <input name="zone" class="form-control" style="border-radius: 4px; width: 95%" id="modal-npwp" value=""/>
+                                                    <input name="zone" class="form-control" style="border-radius: 4px; width: 95%" id="modal-zone" value=""/>
                                                 </div>
                                             </div>
                                             <div class="form-group">
@@ -293,12 +240,12 @@
                                             </div>
                                             <div class="form-group">
                                                 <label class="col-xs-3 control-label">Input Date:</label>
-                                                <div class="col-xs-4">
-                                                    <input name="dateTime" class="form-control" style="border-radius: 4px" id="modal-datetime" readonly/>
+                                                <div class="col-xs-4" style="padding-right: 0px">
+                                                    <input name="dateInput" class="form-control" style="border-radius: 4px" id="modal-dateInput" readonly/>
                                                 </div>
                                                 <label class="col-xs-1 control-label">By:</label>
                                                 <div class="col-xs-4">
-                                                    <input class="form-control" style="border-radius: 4px; width: 87%" id="modal-user" value="${actionBean.userSession.username}" readonly/>
+                                                    <input class="form-control" style="border-radius: 4px; width: 87%" id="modal-userInput" value="${actionBean.userSession.username}" readonly/>
                                                 </div>
                                             </div>
                                         </div>
@@ -317,3 +264,114 @@
         </div>
 </s:layout-component>
 </s:layout-render>
+<script>
+    var attributes;
+    $('#modal-searchKey').select2({
+        ajax: {
+            url: '?getListNpwp=&',
+            dataType: "json",
+            delay: 250,
+            data: function(params) {
+                return{npwp: params.term, name: params.term};
+            },
+            processResults: function (data) {
+                return {results: data};
+            }
+        },
+        minimumInputLength: 10,
+        templateResult:function formatRepo (repo) {
+            if (repo.loading) return repo.text;
+            return repo.npwp + " - " + repo.name;
+        },
+        templateSelection: function formatRepoSelection (repo) {
+            $("#modal-npwp").val(repo.npwp);
+            $("#modal-name").val(repo.name);
+            $("#modal-taxId").val(repo.id);
+            $("#modal-description").val(repo.description);
+            attributes=getAttributes(repo.id);
+            $("#list-nop").html('');
+            if(attributes!==undefined&&attributes.length>0){
+                $.each(attributes, function(k,v){
+                    $("#list-nop").append('<a onclick="showAttribute(' + v.id + ')" class="list-group-item list-group-item-action"><span class="fa fa-chevron-right fa-sm">&nbsp;</span>' + v.nop + '</a>');
+                });
+                $("#list-nop").removeClass("hidden");
+                $("#btn-addNop").removeClass("hidden");
+            } else {
+                $("#list-nop").addClass("hidden");
+                $("#btn-addNop").addClass("hidden");
+            }
+            return repo.npwp;
+        }
+    });
+
+    function showAttribute(nopId){
+        $.each(attributes, function(k,v){
+            if(v.id===nopId){
+                $("#modal-nop").val(v.nop);
+                $("#modal-ppm").val(v.values);
+                $("#modal-year").val(v.values);
+                $("#modal-street").val(v.street);
+                $("#modal-streetClass").val(v.streetClass);
+                $("#modal-zone").val(v.zone);
+                $("#modal-sector").val(v.sector);
+                $("#modal-rt").val(v.rt);
+                $("#modal-rw").val(v.rw);
+                $("#modal-dateInput").val(dateFormat(v.dateInput,"yyyy-mm-dd HH:MM:ss"));
+                $("#modal-userInput").val(v.userInput);
+                
+                $("#modal-province").html('').select2({data: {id:null, text: null}});
+                $.each(getProvinces(),function(index, item){
+                    $("#modal-province").append(new Option(item.province, item.provinceCode));
+                });
+                $("#modal-province").val(v.masterArea.provinceCode);
+
+                $("#modal-city").html('').select2({data: {id:null, text: null}});
+                $.each(getCities(v.masterArea.provinceCode),function(index, item){
+                    $("#modal-city").append(new Option(item.city, item.cityCode));
+                });
+                $("#modal-city").val(v.masterArea.cityCode);
+                
+                $("#modal-district").html('').select2({data: {id:null, text: null}});
+                $.each(getDistricts(v.masterArea.provinceCode, v.masterArea.cityCode),function(index, item){
+                    $("#modal-district").append(new Option(item.district, item.districtCode));
+                });
+                $("#modal-district").val(v.masterArea.districtCode);
+
+                $("#modal-subDistrict").html('').select2({data: {id:null, text: null}});
+                $.each(getSubDistricts(v.masterArea.provinceCode, v.masterArea.cityCode, v.masterArea.districtCode),function(index, item){
+                    $("#modal-subDistrict").append(new Option(item.subDistrict, item.subDistrictCode));
+                });
+                $("#modal-subDistrict").val(v.masterArea.subDistrictCode);
+
+            }
+        });
+    }
+    
+    function clearModalAttribute(){
+        $("#modal-nop").val("");
+        $("#modal-ppm").val("");
+        $("#modal-year").val("");
+        $("#modal-street").val("");
+        $("#modal-streetClass").val("");
+        $("#modal-zone").val("");
+        $("#modal-sector").val("");
+        $("#modal-rt").val("");
+        $("#modal-rw").val("");
+        $("#modal-dateInput").val("");
+        $("#modal-userInput").val(v.userInput);
+    }
+    
+    function getAttributes(taxId){
+        var tmp;
+        $.ajax({
+            url: "?getListNop=&taxId=" + taxId,
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                tmp=data;
+            },
+            timeout: 5000
+        });
+        return tmp;
+    }
+</script>

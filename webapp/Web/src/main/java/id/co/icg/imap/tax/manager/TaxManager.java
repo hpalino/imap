@@ -17,8 +17,8 @@ import net.sourceforge.stripes.action.FileBean;
  * @author Fauzi Marjalih
  */
 public interface TaxManager {
-    List<TaxPerson> getListTaxPersons(String npwp);
-    List<Attribute> getListAttributes(Long taxId, String nop, String name, String areaCode);
+    List<TaxPerson> getListTaxPersons(String npwp, String name);
+    List<Attribute> getListAttributes(Long taxId, String nop, String areaCode);
     List<Attachment> getListAttachments(Long attributeId, String fileName);
     List<Value> getListValues(Long attributeId);
     TaxPerson getTaxPerson(String npwp);
