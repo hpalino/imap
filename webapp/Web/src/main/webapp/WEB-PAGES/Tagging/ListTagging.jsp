@@ -116,5 +116,32 @@
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="col-lg-12" style="padding-left:5px; padding-right: 5px; padding-bottom: 15px">
+                <div class="ibox float-e-margins" style="margin-bottom: 5px">
+                    <div class="ibox-title">
+                        <h5>Data<small></small></h5>
+                    </div>
+                    <div class="ibox-content" style="padding: 15px" id="data-table">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered table-hover dataTables-maprecord" >
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>NPWP</th>
+                                        <th>Description</th>
+                                        <th>Attribute</th>
+                                        <th>Input Date</th>
+                                        <th>Input User</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="table-content">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 </s:layout-component>
 </s:layout-render>

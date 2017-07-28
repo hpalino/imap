@@ -25,9 +25,11 @@
         <link href="${pageContext.request.contextPath}/css/plugins/jasny/jasny-bootstrap.min.css" rel="stylesheet">
 
         <script src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyAmNd1_VgvOjDFn4A0XpLyd3pCObPCVvk0"></script>
+        <script src="${pageContext.request.contextPath}/js/plugins/markerclusterer/markerclusterer.js"></script>
         <script src="${pageContext.request.contextPath}/js/map.tagging.js"></script>
 
         <style>
+            .alert-response {position: absolute;top: 10px;z-index: 1;right: 0;}
             .ibox-title {padding: 7px 15px 7px; min-height: 36px;}
             .float-e-margins .btn {margin-bottom: 0px;}
             .wrapper-content {padding-top:10px; padding-bottom:20px;}
@@ -47,40 +49,19 @@
                 <div class="ibox float-e-margins" style="margin-bottom: 5px">
                     <div class="ibox-title">
                         <h5>Google Map Picker<small></small></h5>
+                        <div class="ibox-tools">
+                            <a id="stat-area" class="btn btn-primary btn-xs" style="display: none;"></a>
+                            <a id="stat-countNpwp" class="btn btn-primary btn-xs" style="display: none;"></a>
+                            <a id="stat-countNop" class="btn btn-primary btn-xs" style="display: none;"></a>
+                            <a id="stat-avgPpm" class="btn btn-primary btn-xs" style="display: none;"></a>
+                            <a class="dropdown-toggle" data-toggle="modal" data-target="#modFilter">
+                                <i class="fa fa-wrench"></i>
+                            </a>
+                        </div>
                     </div>
                     <div class="ibox-content" style="padding: 7px">
                         <div id="map-container">
                             <div id="map"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-12" style="padding-left:5px; padding-right: 5px; padding-bottom: 15px">
-                <div class="ibox float-e-margins" style="margin-bottom: 5px">
-                    <div class="ibox-title">
-                        <h5>Data<small></small></h5>
-                    </div>
-                    <div class="ibox-content" style="padding: 15px" id="data-table">
-                        <div class="table-responsive">
-                            <table class="table table-striped table-bordered table-hover dataTables-maprecord" >
-                                <thead>
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>NPWP</th>
-                                        <th>Description</th>
-                                        <th>Attribute</th>
-                                        <th>GPS Position</th>
-                                        <th>Attachment</th>
-                                        <th>File Type</th>
-                                        <th>Input Date</th>
-                                        <th>Input User</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="table-content">
-                                </tbody>
-                            </table>
                         </div>
                     </div>
                 </div>
@@ -107,26 +88,26 @@
                                                 <div class="col-xs-9">
                                                     <s:select name="searchKey" style="border-radius: 4px; width: 84%" id="modal-searchKey" >
                                                     </s:select>
-                                                    <button type="submit" name="addNpwp" class="btn btn-white" style="padding: 8px 6px 4px 6px"><i class="fa fa-plus"></i></button>
+                                                    <button type="button" onclick="addTaxPerson()" class="btn btn-white" style="padding: 8px 6px 4px 6px"><i class="fa fa-plus"></i></button>
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label class="col-xs-3 control-label">Name:</label>
                                                 <div class="col-xs-9">
-                                                    <input name="name" class="form-control" style="border-radius: 4px; width: 95%" id="modal-name" disabled/>
+                                                    <input name="name" class="form-control" style="border-radius: 4px; width: 95%" id="modal-name" readonly/>
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label class="col-xs-3 control-label">NPWP:</label>
                                                 <div class="col-xs-7">
-                                                    <input name="npwp" class="form-control" style="border-radius: 4px; width: 95%" id="modal-npwp" disabled/>
+                                                    <input name="npwp" class="form-control" style="border-radius: 4px; width: 95%" id="modal-npwp" readonly/>
                                                     <input name="taxId" class="hidden" id="modal-taxId" value=""/>
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label class="col-xs-3 control-label">Description:</label>
                                                 <div class="col-xs-9">
-                                                    <input name="description" class="form-control" style="border-radius: 4px; width: 95%" id="modal-description" disabled/>
+                                                    <input name="description" class="form-control" style="border-radius: 4px; width: 95%" id="modal-description" readonly/>
                                                 </div>
                                             </div>
                                             <div class="form-group">
@@ -134,7 +115,7 @@
                                                 <div class="col-lg-9">
                                                     <div class="list-group hidden" style="width:95%" id="list-nop">
                                                     </div>
-                                                    <button type="button" onclick="clearModalAttribute()" class="btn btn-white hidden" id="btn-addNop"><i class="fa fa-plus">&nbsp;</i>Add New NOP</button>
+                                                    <button type="button" onclick="clearModalAttribute()" class="btn btn-white" id="btn-addNop"><i class="fa fa-plus">&nbsp;</i>Add New NOP</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -147,6 +128,7 @@
                                                 <label class="col-xs-3 control-label">NOP:</label>
                                                 <div class="col-xs-7">
                                                     <input name="nop" class="form-control" style="border-radius: 4px; width: 95%" id="modal-nop" value=""/>
+                                                    <input name="attributeId" class="form-control hidden" id="modal-attributeId" value=""/>
                                                 </div>
                                             </div>
                                             <div class="form-group">
@@ -156,34 +138,34 @@
                                                 </div>
                                                 <label class="col-xs-1 control-label"style="padding-left:0px">Year:</label>
                                                 <div class="col-xs-3" style="margin-left: -10px;margin-right: 10px;">
-                                                    <input name="year" class="form-control" style="border-radius: 4px; width: 95%" id="modal-ppm" value=""/>
+                                                    <input name="year" class="form-control" style="border-radius: 4px; width: 95%" id="modal-year" value=""/>
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label class="col-xs-3 control-label">Province:</label>
                                                 <div class="col-xs-9">
-                                                    <select name="province" id="modal-province" class="form-control" id="modal-province" style="width: 95%">
+                                                    <select name="provinceCode" id="modal-province" class="form-control" id="modal-province" style="width: 95%">
                                                     </select>
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label class="col-xs-3 control-label">City:</label>
                                                 <div class="col-xs-9">
-                                                    <select name="city" id="modal-city" class="form-control" id="modal-city" style="width: 95%">
+                                                    <select name="cityCode" id="modal-city" class="form-control" id="modal-city" style="width: 95%">
                                                     </select>
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label class="col-xs-3 control-label">District:</label>
                                                 <div class="col-xs-9">
-                                                    <select name="district" id="modal-district" class="form-control" id="modal-district" style="width: 95%">
+                                                    <select name="districtCode" id="modal-district" class="form-control" id="modal-district" style="width: 95%">
                                                     </select>
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label class="col-xs-3 control-label">Subdistrict:</label>
                                                 <div class="col-xs-9">
-                                                    <select name="subDistrict" id="modal-subDistrict" class="form-control" id="modal-subDistrict" style="width: 95%">
+                                                    <select name="subDistrictCode" id="modal-subDistrict" class="form-control" id="modal-subDistrict" style="width: 95%">
                                                     </select>
                                                 </div>
                                             </div>
@@ -261,16 +243,66 @@
                     </s:form>
                 </div>
             </div>
+            <div class="modal inmodal" id="modFilter" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog modal-sm" style="width: 400px">
+                    <div class="modal-content animated fadeIn">
+                        <div class="modal-header" style="padding: 10px 10px">
+                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                            <i class="fa fa-globe" style="zoom: 3;"></i>
+                            <h3 id="mod-detail-name" style="margin:10px 0 0 0">Setup for Maps</h3>
+                            <small id="mod-detail-location" class="font-bold">Filter based on below criterias:</small>
+                        </div>
+                        <div class="modal-body" style="padding: 10px 10px 5px 5px">
+                            <div class="form-horizontal">
+                                <div class="form-group">
+                                    <label class="col-xs-3 control-label">Province:</label>
+                                    <div class="col-xs-9">
+                                        <select id="filter-province" class="form-control" style="width: 95%">
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-xs-3 control-label">City:</label>
+                                    <div class="col-xs-9">
+                                        <select id="filter-city" class="form-control" style="width: 95%">
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-xs-3 control-label">District:</label>
+                                    <div class="col-xs-9">
+                                        <select id="filter-district" class="form-control" style="width: 95%">
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-xs-3 control-label">Subdistrict:</label>
+                                    <div class="col-xs-9">
+                                        <select id="filter-subDistrict" class="form-control"style="width: 95%">
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-white" onclick="updateSettings()" data-dismiss="modal">Update</button>
+                            <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 </s:layout-component>
 </s:layout-render>
 <script>
     var attributes;
+    var called=0;
+    
     $('#modal-searchKey').select2({
         ajax: {
             url: '?getListNpwp=&',
             dataType: "json",
-            delay: 250,
+            delay: 500,
             data: function(params) {
                 return{npwp: params.term, name: params.term};
             },
@@ -278,12 +310,19 @@
                 return {results: data};
             }
         },
-        minimumInputLength: 10,
+        minimumInputLength: 5,
+        escapeMarkup: function(markup) {
+            return markup;
+        },
         templateResult:function formatRepo (repo) {
             if (repo.loading) return repo.text;
             return repo.npwp + " - " + repo.name;
         },
         templateSelection: function formatRepoSelection (repo) {
+            $("#modal-name").prop('readonly', true);
+            $("#modal-npwp").prop('readonly', true);
+            $("#modal-description").prop('readonly', true);
+
             $("#modal-npwp").val(repo.npwp);
             $("#modal-name").val(repo.name);
             $("#modal-taxId").val(repo.id);
@@ -295,21 +334,32 @@
                     $("#list-nop").append('<a onclick="showAttribute(' + v.id + ')" class="list-group-item list-group-item-action"><span class="fa fa-chevron-right fa-sm">&nbsp;</span>' + v.nop + '</a>');
                 });
                 $("#list-nop").removeClass("hidden");
-                $("#btn-addNop").removeClass("hidden");
             } else {
                 $("#list-nop").addClass("hidden");
-                $("#btn-addNop").addClass("hidden");
             }
             return repo.npwp;
         }
     });
 
+    $("#modal-searchKey").val(null).trigger("change");
+    $("#modal-searchKey").empty().trigger("change");
+    
     function showAttribute(nopId){
         $.each(attributes, function(k,v){
             if(v.id===nopId){
+                $("#modal-attributeId").val(v.id);
                 $("#modal-nop").val(v.nop);
-                $("#modal-ppm").val(v.values);
-                $("#modal-year").val(v.values);
+                if(v.values!==null){
+                    var tmpYear, tmpPpm;
+                    $.each(v.values, function(x,y){
+                        if(tmpYear===undefined||tmpYear<y.year){
+                            tmpPpm=y.ppm;
+                            tmpYear=y.year;
+                        }
+                    });
+                    $("#modal-ppm").val(tmpPpm);
+                    $("#modal-year").val(tmpYear);
+                }
                 $("#modal-street").val(v.street);
                 $("#modal-streetClass").val(v.streetClass);
                 $("#modal-zone").val(v.zone);
@@ -347,7 +397,19 @@
         });
     }
     
+    function addTaxPerson(){
+        $("#modal-name").val("");
+        $("#modal-npwp").val("");
+        $("#modal-description").val("");
+        clearModalAttribute();
+        $("#modal-name").prop('readonly', false);
+        $("#modal-npwp").prop('readonly', false);
+        $("#modal-description").prop('readonly', false);
+        $("#modal-name").focus();
+    }
+    
     function clearModalAttribute(){
+        $("#modal-attributeId").val("");
         $("#modal-nop").val("");
         $("#modal-ppm").val("");
         $("#modal-year").val("");
@@ -358,7 +420,7 @@
         $("#modal-rt").val("");
         $("#modal-rw").val("");
         $("#modal-dateInput").val("");
-        $("#modal-userInput").val(v.userInput);
+        $("#modal-userInput").val("${actionBean.userSession.username}");
     }
     
     function getAttributes(taxId){

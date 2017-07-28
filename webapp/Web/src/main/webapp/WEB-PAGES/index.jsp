@@ -103,7 +103,7 @@
                     </div>
                     <div class="wrapper wrapper-content animated fadeInRight">
                         <c:if test="${not empty actionBean.response}">
-                            <div class="row">
+                            <div class="row alert-response">
                                 <div class="col-lg-12">
                             <c:choose>
                                 <c:when test="${fn:containsIgnoreCase(actionBean.response, 'fail')}">

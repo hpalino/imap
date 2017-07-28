@@ -9,7 +9,7 @@ package id.co.icg.imap.tax.manager.impl;
 import id.co.icg.imap.tax.dao.model.Attachment;
 import id.co.icg.imap.tax.dao.model.Value;
 import id.co.icg.imap.tax.dao.model.Attribute;
-import id.co.icg.imap.tax.dao.model.MasterArea;
+import id.co.icg.imap.tax.dao.model.AttributeMap;
 import id.co.icg.imap.tax.dao.model.TaxPerson;
 import id.co.icg.imap.tax.dao.model.User;
 import id.co.icg.imap.tax.manager.AreaManager;
@@ -105,7 +105,7 @@ public class TaxManagerImpl implements TaxManager {
             public Attribute mapRow(ResultSet rs, int i) throws SQLException {
                 Attribute a = new Attribute();
                 a.setId(rs.getLong("id"));
-                a.setTaxId(rs.getString("tax_id"));
+                a.setTaxId(rs.getLong("tax_id"));
                 a.setNop(rs.getString("nop"));
                 a.setAreaCode(rs.getString("area_code"));
                 a.setLatitude(rs.getDouble("latitude"));
@@ -122,6 +122,31 @@ public class TaxManagerImpl implements TaxManager {
                 a.setAttribute3(rs.getString("attribute3"));
                 a.setUserInput(rs.getString("user_input"));
                 a.setDateInput(new java.util.Date(rs.getTimestamp("date_input").getTime()));
+
+                List<Value> values = getListValues(a.getId());
+                if(values==null) values = new ArrayList<Value>();
+                a.setValues(values);
+                return a;
+            }
+        });
+    }
+
+    public List<AttributeMap> getListAttributeMaps(String provinceCode, String cityCode, String districtCode, String subDistrictCode) {
+        String query;
+        query  = 
+            " SELECT id, tax_id, nop, area_code, latitude, longitude " +
+            " FROM attribute " +
+            " WHERE area_code LIKE ?";
+        return jdbcTemplateProd.query(query, new Object[]{("%" + (provinceCode!=null?provinceCode:"") + (cityCode!=null?cityCode:"") + (districtCode!=null?districtCode:"") + (subDistrictCode!=null?subDistrictCode:"") + "%")}, new RowMapper() {
+            @Override
+            public AttributeMap mapRow(ResultSet rs, int i) throws SQLException {
+                AttributeMap a = new AttributeMap();
+                a.setId(rs.getLong("id"));
+                a.setTaxId(rs.getLong("tax_id"));
+                a.setNop(rs.getString("nop"));
+                a.setAreaCode(rs.getString("area_code"));
+                a.setLatitude(rs.getDouble("latitude"));
+                a.setLongitude(rs.getDouble("longitude"));
                 return a;
             }
         });
@@ -247,47 +272,56 @@ public class TaxManagerImpl implements TaxManager {
         }
     }
     
-    public Attribute getAttribute(String nop) {
-        String query;
-        query  = 
-            " SELECT * " +
-            " FROM attribute " +
-            " WHERE nop = ? ";
-        try {
-            return jdbcTemplateProd.queryForObject(query, new Object[]{nop}, new RowMapper<Attribute>() {
-                @Override
-                public Attribute mapRow(ResultSet rs, int i) throws SQLException {
-                    Attribute a = new Attribute();
-                    a.setId(rs.getLong("id"));
-                    a.setTaxId(rs.getString("tax_id"));
-                    a.setNop(rs.getString("nop"));
-                    a.setAreaCode(rs.getString("area_code"));
-                    a.setStreet(rs.getString("street"));
-                    a.setStreetClass(rs.getString("street_class"));
-                    a.setZone(rs.getString("zone"));
-                    a.setSector(rs.getString("sector"));
-                    a.setMasterArea(areaManager.getMasterArea(rs.getString("area_code")));
-                    a.setRt(rs.getString("rt"));
-                    a.setRw(rs.getString("rw"));
-                    a.setAttribute1(rs.getString("attribute1"));
-                    a.setAttribute2(rs.getString("attribute2"));
-                    a.setAttribute3(rs.getString("attribute3"));
-                    a.setUserInput(rs.getString("user_input"));
-                    a.setDateInput(new java.util.Date(rs.getTimestamp("date_input").getTime()));
-
-                    List<Attachment> attachments = getListAttachments(a.getId(),null);
-                    if(attachments==null) attachments = new ArrayList<Attachment>();
-                    a.setAttachments(attachments);
-
-                    List<Value> values = getListValues(a.getId());
-                    if(values==null) values = new ArrayList<Value>();
-                    a.setValues(values);
-                    return a;
-                }
-            });
-        } catch(EmptyResultDataAccessException e){
-            return null;
+    
+    public Attribute getAttribute(String nop, Long attributeId) {
+        String query, filter="";
+        if(nop!=null){
+            filter += " nop='" + nop + "' ";
         }
+        if(attributeId!=null){
+            filter += (!"".equals(filter)?" OR":" ") + " id='" + attributeId + "' ";
+        }
+        if(!"".equals(filter)){
+            query  = 
+                " SELECT * " +
+                " FROM attribute " +
+                " WHERE 1 AND (" + filter + ")";
+            try {
+                return jdbcTemplateProd.queryForObject(query, new Object[]{}, new RowMapper<Attribute>() {
+                    @Override
+                    public Attribute mapRow(ResultSet rs, int i) throws SQLException {
+                        Attribute a = new Attribute();
+                        a.setId(rs.getLong("id"));
+                        a.setTaxId(rs.getLong("tax_id"));
+                        a.setNop(rs.getString("nop"));
+                        a.setAreaCode(rs.getString("area_code"));
+                        a.setStreet(rs.getString("street"));
+                        a.setStreetClass(rs.getString("street_class"));
+                        a.setZone(rs.getString("zone"));
+                        a.setSector(rs.getString("sector"));
+                        a.setMasterArea(areaManager.getMasterArea(rs.getString("area_code")));
+                        a.setRt(rs.getString("rt"));
+                        a.setRw(rs.getString("rw"));
+                        a.setAttribute1(rs.getString("attribute1"));
+                        a.setAttribute2(rs.getString("attribute2"));
+                        a.setAttribute3(rs.getString("attribute3"));
+                        a.setUserInput(rs.getString("user_input"));
+                        a.setDateInput(new java.util.Date(rs.getTimestamp("date_input").getTime()));
+
+                        List<Attachment> attachments = getListAttachments(a.getId(),null);
+                        if(attachments==null) attachments = new ArrayList<Attachment>();
+                        a.setAttachments(attachments);
+
+                        List<Value> values = getListValues(a.getId());
+                        if(values==null) values = new ArrayList<Value>();
+                        a.setValues(values);
+                        return a;
+                    }
+                });
+            } catch(EmptyResultDataAccessException e){
+                return null;
+            }
+        } else return null;
     }
     
     public Integer insertTaxPerson(TaxPerson taxPerson) {
@@ -298,7 +332,7 @@ public class TaxManagerImpl implements TaxManager {
                     taxPerson.setNpwp(tmpNpwp);
                     String query = "INSERT INTO tax_person("
                             + "name, npwp, description, user_input) "
-                            + "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                            + "VALUES(?, ?, ?, ?)";
                     int[] arg = {Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR};
                     return jdbcTemplateProd.update(query, new Object[]{
                         taxPerson.getName(), tmpNpwp, 
@@ -318,25 +352,53 @@ public class TaxManagerImpl implements TaxManager {
         if(attribute!=null){
             String tmpNop = attribute.getNop().replaceAll("[^0-9]", "");
             if (tmpNop.length()==18){
-                if(getAttribute(tmpNop)==null){
+                if(getAttribute(tmpNop, null)==null){
                     attribute.setNop(tmpNop);
                     String query = "INSERT INTO attribute("
                             + "tax_id, nop, area_code, latitude, longitude, "
-                            + "street, street_class, zone, sector, rt,"
-                            + "rw, sub_district, district, city, province,"
+                            + "street, street_class, zone, sector, rt, rw, "
                             + "attribute1, attribute2, attribute3, user_input) "
-                            + "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                            + "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                     int[] arg = {   Types.BIGINT, Types.VARCHAR, Types.VARCHAR, Types.DOUBLE, Types.DOUBLE,
-                                    Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, 
-                                    Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, 
+                                    Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, 
                                     Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR };
                     return jdbcTemplateProd.update(query, new Object[]{
                         attribute.getTaxId(), tmpNop, attribute.getAreaCode(), attribute.getLatitude(), attribute.getLongitude(),
-                        attribute.getStreet(), attribute.getStreetClass(), attribute.getZone(), attribute.getZone(), attribute.getRt(),
-                        attribute.getRw(), attribute.getSubDistrict(), attribute.getDistrict(), attribute.getCity(), attribute.getProvince(),
+                        attribute.getStreet(), attribute.getStreetClass(), attribute.getZone(), attribute.getZone(), attribute.getRt(), attribute.getRw(), 
                         attribute.getAttribute1(), attribute.getAttribute2(), attribute.getAttribute3(), attribute.getUserInput()}, arg);
                 } else {
                     logger.info(attribute.getUserInput()+ ":EXISTED_NOP:" + attribute.getNop());
+                    return 97;
+                }
+            } else {
+                logger.info(attribute.getUserInput()+ ":INVALID_NOP:" + attribute.getNop());
+                return 98;
+            }
+        } else return 99;
+    }
+
+    public Integer updateAttribute(Attribute attribute) {
+        if(attribute!=null){
+            String tmpNop = attribute.getNop().replaceAll("[^0-9]", "");
+            if (tmpNop.length()==18){
+                if(getAttribute(tmpNop, attribute.getId())!=null){
+                    attribute.setNop(tmpNop);
+                    String query = "UPDATE attribute SET "
+                            + "nop=?, area_code=?, latitude=?, longitude=?, "
+                            + "street=?, street_class=?, zone=?, sector=?, rt=?, rw=?, "
+                            + "attribute1=?, attribute2=?, attribute3=?, user_input=?, date_input=? "
+                            + "WHERE tax_id=? AND id=?";
+                    int[] arg = {   Types.VARCHAR, Types.VARCHAR, Types.DOUBLE, Types.DOUBLE,
+                                    Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, 
+                                    Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, 
+                                    Types.VARCHAR, Types.VARCHAR, Types.TIMESTAMP, Types.BIGINT, Types.BIGINT};
+                    return jdbcTemplateProd.update(query, new Object[]{
+                        tmpNop, attribute.getAreaCode(), attribute.getLatitude(), attribute.getLongitude(),
+                        attribute.getStreet(), attribute.getStreetClass(), attribute.getZone(), attribute.getSector(),
+                        attribute.getRt(),attribute.getRw(), attribute.getAttribute1(), attribute.getAttribute2(), 
+                        attribute.getAttribute3(), attribute.getUserInput(), new Date(), attribute.getTaxId(), attribute.getId()}, arg);
+                } else {
+                    logger.info(attribute.getUserInput()+ ":NOP_NOT_EXIST:" + attribute.getNop());
                     return 97;
                 }
             } else {
@@ -357,6 +419,22 @@ public class TaxManagerImpl implements TaxManager {
                     value.getAttributeId(), value.getPpm(), value.getYear(), value.getUserInput()}, arg);
             } else {
                 logger.info(value.getUserInput()+ ":EXISTED_VALUE:" + value.getAttributeId() + ":" + value.getYear());
+                return 98;
+            }
+        } else return 99;
+    }
+
+    public Integer updateValue(Value value) {
+        if(value!=null){
+            if(getValue(value.getAttributeId(), value.getYear())!=null){
+                String query = "UPDATE value SET "
+                        + "ppm=?, user_input=? "
+                        + "WHERE attribute_id=? AND year=?";
+                int[] arg = {Types.DOUBLE, Types.VARCHAR, Types.BIGINT, Types.INTEGER};
+                return jdbcTemplateProd.update(query, new Object[]{
+                    value.getPpm(), value.getUserInput(), value.getAttributeId(), value.getYear()}, arg);
+            } else {
+                logger.info(value.getUserInput()+ ":VALUE_NOT_EXISTED:" + value.getAttributeId() + ":" + value.getYear());
                 return 98;
             }
         } else return 99;

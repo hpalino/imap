@@ -7,15 +7,11 @@ import java.util.List;
 public class Attribute{
 
     private Long id;
-    private String taxId;
+    private Long taxId;
     private String nop;
     private String areaCode;
     private Double latitude;
     private Double longitude;
-    private String province;
-    private String city;
-    private String district;
-    private String subDistrict;
     private String rw;
     private String rt;
     private String street;
@@ -40,38 +36,6 @@ public class Attribute{
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getProvince() {
-        return province;
-    }
-
-    public void setProvince(String province) {
-        this.province = province;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getDistrict() {
-        return district;
-    }
-
-    public void setDistrict(String district) {
-        this.district = district;
-    }
-
-    public String getSubDistrict() {
-        return subDistrict;
-    }
-
-    public void setSubDistrict(String subDistrict) {
-        this.subDistrict = subDistrict;
     }
 
     public String getRw() {
@@ -154,11 +118,11 @@ public class Attribute{
         this.attribute3 = attribute3;
     }
 
-    public String getTaxId() {
+    public Long getTaxId() {
         return taxId;
     }
 
-    public void setTaxId(String taxId) {
+    public void setTaxId(Long taxId) {
         this.taxId = taxId;
     }
 
